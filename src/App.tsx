@@ -1,5 +1,49 @@
-function App() {
-  return <div></div>;
+import {
+  App,
+  BoardInfo,
+  IDataProvider,
+} from "@alessiosatta/brello-business-logic";
+import { useEffect, useState } from "react";
+
+function AppComponent() {
+  const [input, setInput] = useState("");
+  const [boards, setBoards] = useState<BoardInfo[]>([]);
+
+  const dataProvider: IDataProvider = {
+    createBoard(title) {
+      const board: BoardInfo = {
+        id: Math.floor(Math.random() * 1000).toString(36),
+        title: title,
+      };
+      return setBoards([...boards, board]);
+    },
+    getBoards() {
+      return boards;
+    },
+  } as IDataProvider;
+
+  const app = new App(dataProvider);
+
+  useEffect(() => {
+    app.getBoards();
+  }, []);
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button onClick={() => app.createBoard(input)}>Create board</button>
+      {boards &&
+        boards.map((board, i) => (
+          <div key={i + board.id}>
+            <button>{board.title}</button>
+          </div>
+        ))}
+    </div>
+  );
 }
 
-export default App;
+export default AppComponent;
