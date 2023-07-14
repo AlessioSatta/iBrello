@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 
 function AppComponent() {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState<string>("");
   const [boards, setBoards] = useState<BoardInfo[]>([]);
 
   const dataProvider: IDataProvider = {
