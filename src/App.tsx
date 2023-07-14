@@ -8,7 +8,7 @@ import BoardComponent from "./components/Board";
 
 function AppComponent() {
   const [input, setInput] = useState<string>("");
-  const [boards, setBoards] = useState<BoardInfo[]>([]);
+  const [boardsList, setBoardsList] = useState<BoardInfo[]>([]);
 
   const dataProvider: IDataProvider = {
     createBoard(title) {
@@ -16,10 +16,10 @@ function AppComponent() {
         id: Math.floor(Math.random() * 1000).toString(36),
         title: title,
       };
-      return setBoards([...boards, board]);
+      return setBoardsList([...boardsList, board]);
     },
     getBoards() {
-      return boards;
+      return boardsList;
     },
   } as IDataProvider;
 
@@ -27,7 +27,8 @@ function AppComponent() {
 
   useEffect(() => {
     app.getBoards();
-  }, []);
+    console.log(boardsList);
+  }, [boardsList]);
 
   return (
     <div>
@@ -37,10 +38,15 @@ function AppComponent() {
         onChange={(e) => setInput(e.target.value)}
       />
       <button onClick={() => app.createBoard(input)}>Create board</button>
-      {boards &&
-        boards.map((board, i) => (
+      {boardsList &&
+        boardsList.map((board, i) => (
           <div key={i + board.id}>
-            <BoardComponent id={board.id} title={board.title}></BoardComponent>
+            <BoardComponent
+              id={board.id}
+              title={board.title}
+              boardsList={boardsList}
+              setBoardsList={() => setBoardsList([])}
+            ></BoardComponent>
           </div>
         ))}
     </div>

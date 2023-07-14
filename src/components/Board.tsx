@@ -1,24 +1,26 @@
 import {
   Board,
+  BoardInfo,
   ColumnInfo,
   IDataProvider,
 } from "@alessiosatta/brello-business-logic";
 import { useEffect, useState } from "react";
+import ColumnComponent from "./Column";
 
 const BoardComponent = (props: any) => {
-  const { id, title } = props;
-  const [input, setInput] = useState<string>("");
+  const { id, title, boardsList, setBoardsList } = props;
+  const [inputBoard, setInputBoard] = useState<string>("");
+  const [inputColumn, setInputColumn] = useState<string>("");
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
-  const [columns, setColumns] = useState<ColumnInfo[]>([]);
+  const [columns, setColumns] = useState<ColumnInfo[]>([
+    {
+      boardId: id,
+      id: Math.floor(Math.random() * 1000).toString(36),
+      title: "Colonna 1",
+    },
+  ]);
 
   const dataProvider: IDataProvider = {
-    upateBoardTitle(boardId, title) {
-      if (boardId) setNewBoardTitle(title);
-    },
-    deleteBoard(boardId) {},
-    getColumns(boardId) {
-      if (boardId) return columns;
-    },
     createColum(boardId, title) {
       const columm: ColumnInfo = {
         id: Math.floor(Math.random() * 1000).toString(36),
@@ -26,6 +28,17 @@ const BoardComponent = (props: any) => {
         boardId: boardId,
       };
       return setColumns([...columns, columm]);
+    },
+    deleteBoard(boardId) {
+      setBoardsList((current: BoardInfo[]) => {
+        return current.filter((a) => a.id != boardId);
+      });
+    },
+    getColumns(boardId) {
+      if (boardId) return columns;
+    },
+    upateBoardTitle(boardId, title) {
+      if (boardId) setNewBoardTitle(title);
     },
   } as IDataProvider;
 
@@ -40,20 +53,23 @@ const BoardComponent = (props: any) => {
       <h1>{newBoardTitle || title}</h1>
       <input
         type="text"
-        value={input}
+        value={inputBoard}
         onChange={(e) => {
-          setInput(e.target.value);
+          setInputBoard(e.target.value);
         }}
       />
-      <button onClick={() => board.updateTitle(input)}>
+      <button onClick={() => board.updateTitle(inputBoard)}>
         Update Board Title
       </button>
+      <button onClick={() => board.delete()}>Delete board</button>
       <input
         type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={inputColumn}
+        onChange={(e) => setInputColumn(e.target.value)}
       />
-      <button onClick={() => board.createColum("TItolo")}>Create columm</button>
+      <button onClick={() => board.createColum(inputColumn)}>
+        Create columm
+      </button>
       {columns &&
         columns.map((column, i) => (
           <div key={i + column.id}>
@@ -61,6 +77,8 @@ const BoardComponent = (props: any) => {
               id={column.id}
               title={column.title}
               boardId={id}
+              setColumns={() => setColumns([])}
+              columns={columns}
             ></ColumnComponent>
           </div>
         ))}
