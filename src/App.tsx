@@ -4,6 +4,7 @@ import {
   IDataProvider,
 } from "@alessiosatta/brello-business-logic";
 import { useEffect, useState } from "react";
+import BoardComponent from "./components/Board";
 
 function AppComponent() {
   const [input, setInput] = useState<string>("");
@@ -39,7 +40,7 @@ function AppComponent() {
       {boards &&
         boards.map((board, i) => (
           <div key={i + board.id}>
-            <button>{board.title}</button>
+            <BoardComponent id={board.id} title={board.title}></BoardComponent>
           </div>
         ))}
     </div>
