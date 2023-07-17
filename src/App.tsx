@@ -11,7 +11,7 @@ function AppComponent() {
   const [boardsList, setBoardsList] = useState<BoardInfo[]>([]);
 
   const dataProvider: IDataProvider = {
-    createBoard(title) {
+    createBoard(title: string) {
       const board: BoardInfo = {
         id: Math.floor(Math.random() * 1000).toString(),
         title: title,

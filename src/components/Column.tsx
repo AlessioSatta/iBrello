@@ -5,21 +5,17 @@ import {
   TaskInfo,
 } from "@alessiosatta/brello-business-logic";
 import { useEffect, useState } from "react";
+import TaskComponent from "./Task";
 
 const ColumnComponent = (props: any) => {
   const { id, boardId, title, setColumns } = props;
   const [tasks, setTasks] = useState<TaskInfo[]>([]);
   const [inputColumn, setInputColumn] = useState<string>("");
+  const [inputTask, setInputTask] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
   const dataProvider: IDataProvider = {
-    getColumnTasks(columnId) {
-      return tasks.filter((a) => a.columnId == columnId);
-    },
-    updateColumnTitle(columnId, title) {
-      if (columnId) setNewColumnTitle(title);
-    },
-    createTask(boardId, columnId, title) {
+    createTask(boardId: string, columnId: string, title: string) {
       const task: TaskInfo = {
         id: Math.floor(Math.random() * 1000).toString(),
         boardId: boardId,
@@ -28,10 +24,17 @@ const ColumnComponent = (props: any) => {
       };
       return setTasks([...tasks, task]);
     },
-    deleteColumn(columnId) {
-      setColumns((current: ColumnInfo[]) => {
-        return current.filter((a) => a.id != columnId);
-      });
+    deleteColumn(columnId: string) {
+      if (columnId == id)
+        setColumns((current: ColumnInfo[]) => {
+          return current.filter((a) => a.id != columnId);
+        });
+    },
+    getColumnTasks(columnId: string) {
+      return tasks.filter((a) => a.columnId == columnId);
+    },
+    updateColumnTitle(columnId: string, title: string) {
+      if (columnId == id) setNewColumnTitle(title);
     },
   } as IDataProvider;
 
@@ -39,11 +42,13 @@ const ColumnComponent = (props: any) => {
 
   useEffect(() => {
     column.getTasks();
-  }, []);
+  }, [tasks]);
 
   return (
-    <>
-      <h1>{newColumnTitle || title}</h1>
+    <div>
+      <h1>
+        {id} - {newColumnTitle || title}
+      </h1>
       <input
         type="text"
         value={inputColumn}
@@ -55,7 +60,27 @@ const ColumnComponent = (props: any) => {
         Update Column Title
       </button>
       <button onClick={() => column.delete()}>Delete column</button>
-    </>
+      <input
+        type="text"
+        value={inputTask}
+        onChange={(e) => setInputTask(e.target.value)}
+      />
+      <button onClick={() => column.createTask(inputTask)}>Create task</button>
+
+      {tasks &&
+        tasks.map((task, i) => (
+          <div key={i + task.id}>
+            <TaskComponent
+              id={task.id}
+              boardId={task.boardId}
+              columm={column}
+              columnId={id}
+              setTasks={setTasks}
+              title={task.title}
+            ></TaskComponent>
+          </div>
+        ))}
+    </div>
   );
 };
 

@@ -16,12 +16,12 @@ const BoardComponent = (props: any) => {
     {
       boardId: id,
       id: Math.floor(Math.random() * 1000).toString(),
-      title: "Colonna 1",
+      title: "Column 1",
     },
   ]);
 
   const dataProvider: IDataProvider = {
-    createColum(boardId, title) {
+    createColum(boardId: string, title: string) {
       const columm: ColumnInfo = {
         id: Math.floor(Math.random() * 1000).toString(),
         title: title,
@@ -29,19 +29,20 @@ const BoardComponent = (props: any) => {
       };
       return setColumns([...columns, columm]);
     },
-    deleteBoard(boardId) {
-      setBoardsList((current: BoardInfo[]) => {
-        return current.filter((a) => a.id != boardId);
-      });
+    deleteBoard(boardId: string) {
+      if (boardId == id)
+        setBoardsList((current: BoardInfo[]) => {
+          return current.filter((a) => a.id != boardId);
+        });
       setColumns((current: ColumnInfo[]) => {
         return current.filter((a) => a.boardId != boardId);
       });
     },
-    getColumns(boardId) {
-      if (boardId) return columns;
+    getColumns(boardId: string) {
+      if (boardId == id) return columns;
     },
-    upateBoardTitle(boardId, title) {
-      if (boardId) setNewBoardTitle(title);
+    upateBoardTitle(boardId: string, title: string) {
+      if (boardId == id) setNewBoardTitle(title);
     },
   } as IDataProvider;
 
@@ -57,9 +58,7 @@ const BoardComponent = (props: any) => {
       <input
         type="text"
         value={inputBoard}
-        onChange={(e) => {
-          setInputBoard(e.target.value);
-        }}
+        onChange={(e) => setInputBoard(e.target.value)}
       />
       <button onClick={() => board.updateTitle(inputBoard)}>
         Update Board Title
