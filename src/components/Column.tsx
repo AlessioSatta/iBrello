@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 
 const ColumnComponent = (props: any) => {
-  const { id, boardId, columns, title, setColumns } = props;
+  const { id, boardId, title, setColumns } = props;
   const [tasks, setTasks] = useState<TaskInfo[]>([]);
   const [inputColumn, setInputColumn] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
@@ -21,7 +21,7 @@ const ColumnComponent = (props: any) => {
     },
     createTask(boardId, columnId, title) {
       const task: TaskInfo = {
-        id: Math.floor(Math.random() * 1000).toString(36),
+        id: Math.floor(Math.random() * 1000).toString(),
         boardId: boardId,
         columnId: columnId,
         title: title,
@@ -29,9 +29,9 @@ const ColumnComponent = (props: any) => {
       return setTasks([...tasks, task]);
     },
     deleteColumn(columnId) {
-      const newList = columns.filter((a: ColumnInfo) => a.id != columnId);
-      console.log(newList);
-      setColumns(newList);
+      setColumns((current: ColumnInfo[]) => {
+        return current.filter((a) => a.id != columnId);
+      });
     },
   } as IDataProvider;
 

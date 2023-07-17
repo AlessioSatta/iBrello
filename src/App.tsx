@@ -13,7 +13,7 @@ function AppComponent() {
   const dataProvider: IDataProvider = {
     createBoard(title) {
       const board: BoardInfo = {
-        id: Math.floor(Math.random() * 1000).toString(36),
+        id: Math.floor(Math.random() * 1000).toString(),
         title: title,
       };
       return setBoardsList([...boardsList, board]);
@@ -27,7 +27,6 @@ function AppComponent() {
 
   useEffect(() => {
     app.getBoards();
-    console.log(boardsList);
   }, [boardsList]);
 
   return (
@@ -44,8 +43,7 @@ function AppComponent() {
             <BoardComponent
               id={board.id}
               title={board.title}
-              boardsList={boardsList}
-              setBoardsList={() => setBoardsList([])}
+              setBoardsList={setBoardsList}
             ></BoardComponent>
           </div>
         ))}

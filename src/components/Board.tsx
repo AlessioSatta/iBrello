@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 import ColumnComponent from "./Column";
 
 const BoardComponent = (props: any) => {
-  const { id, title, boardsList, setBoardsList } = props;
+  const { id, title, setBoardsList } = props;
   const [inputBoard, setInputBoard] = useState<string>("");
   const [inputColumn, setInputColumn] = useState<string>("");
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
   const [columns, setColumns] = useState<ColumnInfo[]>([
     {
       boardId: id,
-      id: Math.floor(Math.random() * 1000).toString(36),
+      id: Math.floor(Math.random() * 1000).toString(),
       title: "Colonna 1",
     },
   ]);
@@ -23,7 +23,7 @@ const BoardComponent = (props: any) => {
   const dataProvider: IDataProvider = {
     createColum(boardId, title) {
       const columm: ColumnInfo = {
-        id: Math.floor(Math.random() * 1000).toString(36),
+        id: Math.floor(Math.random() * 1000).toString(),
         title: title,
         boardId: boardId,
       };
@@ -32,6 +32,9 @@ const BoardComponent = (props: any) => {
     deleteBoard(boardId) {
       setBoardsList((current: BoardInfo[]) => {
         return current.filter((a) => a.id != boardId);
+      });
+      setColumns((current: ColumnInfo[]) => {
+        return current.filter((a) => a.boardId != boardId);
       });
     },
     getColumns(boardId) {
@@ -77,8 +80,7 @@ const BoardComponent = (props: any) => {
               id={column.id}
               title={column.title}
               boardId={id}
-              setColumns={() => setColumns([])}
-              columns={columns}
+              setColumns={setColumns}
             ></ColumnComponent>
           </div>
         ))}
