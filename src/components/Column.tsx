@@ -7,8 +7,19 @@ import {
 import { useEffect, useState } from "react";
 import TaskComponent from "./Task";
 
-const ColumnComponent = (props: any) => {
-  const { id, boardId, title, setColumns } = props;
+type Props = {
+  id: string;
+  boardId: string;
+  title: string;
+  setColumns: any;
+};
+
+const ColumnComponent: React.FC<Props> = ({
+  id,
+  boardId,
+  title,
+  setColumns,
+}) => {
   const [tasks, setTasks] = useState<TaskInfo[]>([]);
   const [inputColumn, setInputColumn] = useState<string>("");
   const [inputTask, setInputTask] = useState<string>("");
@@ -48,9 +59,7 @@ const ColumnComponent = (props: any) => {
 
   return (
     <div>
-      <h1>
-        {id} - {newColumnTitle || title}
-      </h1>
+      <h1>{newColumnTitle || title}</h1>
       <input
         type="text"
         value={inputColumn}

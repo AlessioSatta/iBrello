@@ -7,8 +7,13 @@ import {
 import { useEffect, useState } from "react";
 import ColumnComponent from "./Column";
 
-const BoardComponent = (props: any) => {
-  const { id, title, setBoardsList } = props;
+type Props = {
+  id: string;
+  title: string;
+  setBoardsList: any;
+};
+
+const BoardComponent: React.FC<Props> = ({ id, title, setBoardsList }) => {
   const [inputBoard, setInputBoard] = useState<string>("");
   const [inputColumn, setInputColumn] = useState<string>("");
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
