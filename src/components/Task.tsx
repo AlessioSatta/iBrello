@@ -1,12 +1,28 @@
 import {
+  Column,
   IDataProvider,
   Task,
   TaskInfo,
 } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
 
-const TaskComponent = (props: any) => {
-  const { id, boardId, column, columnId, setTasks, title } = props;
+type Props = {
+  id: string;
+  boardId: string;
+  column: Column;
+  columnId: string;
+  setTasks: any;
+  title: string;
+};
+
+const TaskComponent: React.FC<Props> = ({
+  id,
+  boardId,
+  column,
+  columnId,
+  setTasks,
+  title,
+}) => {
   const [inputTask, setInputTask] = useState<string>("");
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
 
@@ -17,16 +33,7 @@ const TaskComponent = (props: any) => {
           return current.filter((a) => a.id != taskId);
         });
     },
-    updateTaskColumn(taskId: string, targetColumnId: string) {
-      //   if (taskId == id)
-      //     setTasks((prevState: TaskInfo) => {
-      //       return {
-      //         ...prevState,
-      //         columnId: targetColumnId,
-      //       };
-      //     });
-      console.log(taskId, targetColumnId);
-    },
+    updateTaskColumn(taskId: string, targetColumnId: string) {},
     updateTaskTitle(taskId: string, title: string): void {
       if (taskId == id) setNewTaskTitle(title);
     },
@@ -36,7 +43,7 @@ const TaskComponent = (props: any) => {
 
   return (
     <div
-      draggable
+      draggable={true}
       onDragOver={(e) => {
         e.preventDefault();
       }}

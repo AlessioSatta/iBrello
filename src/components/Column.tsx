@@ -31,7 +31,8 @@ const ColumnComponent = (props: any) => {
         });
     },
     getColumnTasks(columnId: string) {
-      return tasks.filter((a) => a.columnId == columnId);
+      // return tasks.filter((a) => a.columnId == columnId);
+      if (columnId == id) return tasks;
     },
     updateColumnTitle(columnId: string, title: string) {
       if (columnId == id) setNewColumnTitle(title);
@@ -42,6 +43,7 @@ const ColumnComponent = (props: any) => {
 
   useEffect(() => {
     column.getTasks();
+    console.log(tasks);
   }, [tasks]);
 
   return (
@@ -73,7 +75,7 @@ const ColumnComponent = (props: any) => {
             <TaskComponent
               id={task.id}
               boardId={task.boardId}
-              columm={column}
+              column={column}
               columnId={id}
               setTasks={setTasks}
               title={task.title}
