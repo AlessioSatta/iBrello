@@ -1,12 +1,15 @@
 import { ITask } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
 
+import { IDndManager } from "../dnd-manager";
+
 type Props = {
+  dndManager: IDndManager<ITask>;
   task: ITask;
   onDelete: () => void;
 };
 
-const TaskComponent: React.FC<Props> = ({ task, onDelete }) => {
+const TaskComponent: React.FC<Props> = ({ dndManager, task, onDelete }) => {
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
   const [taskTitle, setTaskTitle] = useState<string>(task.title);
 
@@ -23,9 +26,9 @@ const TaskComponent: React.FC<Props> = ({ task, onDelete }) => {
 
   return (
     <div
-      // draggable={true}
-      // onDragOver={(e) => e.preventDefault()}
-      // onDrop={(...args) => console.log(...args)}
+      draggable={true}
+      onDragOver={(e) => e.preventDefault()}
+      onDragStart={() => dndManager.onDragStart(task)}
       style={{ marginLeft: "2em" }}
     >
       <h1>{taskTitle}</h1>

@@ -1,13 +1,16 @@
 import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
+
+import { IDndManager } from "../dnd-manager";
 import TaskComponent from "./Task";
 
 type Props = {
   column: IColumn;
+  dndManager: IDndManager<ITask>;
   onDelete: () => void;
 };
 
-const ColumnComponent: React.FC<Props> = ({ column, onDelete }) => {
+const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   const [tasksList, setTasksList] = useState<ITask[]>(column.getTasks());
   const [columnTitle, setColumnTitle] = useState<string>(column.title);
   const [taskTitle, setTaskTitle] = useState<string>("");
@@ -28,6 +31,11 @@ const ColumnComponent: React.FC<Props> = ({ column, onDelete }) => {
     setTasksList(column.getTasks());
   };
 
+  const onTaskDrop = (task: ITask) => {
+    task.moveToColumn(column);
+    setTasksList(column.getTasks());
+  };
+
   const updateColumnTitle = () => {
     setNewColumnTitle("");
     column.updateTitle(newColumnTitle);
@@ -35,7 +43,10 @@ const ColumnComponent: React.FC<Props> = ({ column, onDelete }) => {
   };
 
   return (
-    <div style={{ marginLeft: "2em" }}>
+    <div
+      onDrop={() => dndManager.onDrop(onTaskDrop)}
+      style={{ marginLeft: "2em" }}
+    >
       <h1>{columnTitle}</h1>
       <input
         type="text"
@@ -56,7 +67,11 @@ const ColumnComponent: React.FC<Props> = ({ column, onDelete }) => {
       {tasksList &&
         tasksList.map((task, i) => (
           <div key={i + task.title}>
-            <TaskComponent task={task} onDelete={onTaskDelete}></TaskComponent>
+            <TaskComponent
+              dndManager={dndManager}
+              task={task}
+              onDelete={onTaskDelete}
+            ></TaskComponent>
           </div>
         ))}
     </div>
