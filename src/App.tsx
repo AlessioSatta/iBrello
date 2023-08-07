@@ -1,54 +1,42 @@
-import {
-  App,
-  BoardInfo,
-  IDataProvider,
-} from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { App, IBoard } from "@alessiosatta/brello-business-logic";
+import { useState } from "react";
 import BoardComponent from "./components/Board";
 
-function AppComponent() {
-  const [input, setInput] = useState<string>("");
-  const [boardsList, setBoardsList] = useState<BoardInfo[]>([]);
+type Props = {
+  app: App;
+};
 
-  const dataProvider: IDataProvider = {
-    createBoard(title: string) {
-      const board: BoardInfo = {
-        id: Math.floor(Math.random() * 1000).toString(),
-        title: title,
-      };
-      return setBoardsList([...boardsList, board]);
-    },
-    getBoards() {
-      return boardsList;
-    },
-  } as IDataProvider;
+const AppComponent: React.FC<Props> = ({ app }) => {
+  const [boardsList, setBoardsList] = useState<IBoard[]>(app.getBoards());
+  const [newBoardTitle, setNewBoardTitle] = useState<string>("");
 
-  const app = new App(dataProvider);
+  const createBoard = () => {
+    app.createBoard(newBoardTitle);
+    setBoardsList(app.getBoards());
+  };
 
-  useEffect(() => {
-    app.getBoards();
-  }, [boardsList]);
+  const onBoardDelete = () => {
+    setBoardsList(app.getBoards());
+  };
 
   return (
-    <div>
+    <>
       <input
         type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
+        value={newBoardTitle}
+        onChange={(e) => setNewBoardTitle(e.target.value)}
       />
-      <button onClick={() => app.createBoard(input)}>Create board</button>
-      {boardsList &&
-        boardsList.map((board, i) => (
-          <div key={i + board.id}>
-            <BoardComponent
-              id={board.id}
-              title={board.title}
-              setBoardsList={setBoardsList}
-            ></BoardComponent>
-          </div>
-        ))}
-    </div>
+      <button onClick={() => createBoard()}>Create board</button>
+      {boardsList.map((board, i) => (
+        <div key={i + board.title}>
+          <BoardComponent
+            board={board}
+            onDelete={onBoardDelete}
+          ></BoardComponent>
+        </div>
+      ))}
+    </>
   );
-}
+};
 
 export default AppComponent;

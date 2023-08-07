@@ -1,94 +1,62 @@
-import {
-  Column,
-  ColumnInfo,
-  IDataProvider,
-  TaskInfo,
-} from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
+import { useState } from "react";
 import TaskComponent from "./Task";
 
 type Props = {
-  id: string;
-  boardId: string;
-  title: string;
-  setColumns: any;
+  column: IColumn;
+  onDelete: () => void;
 };
 
-const ColumnComponent: React.FC<Props> = ({
-  id,
-  boardId,
-  title,
-  setColumns,
-}) => {
-  const [tasks, setTasks] = useState<TaskInfo[]>([]);
-  const [inputColumn, setInputColumn] = useState<string>("");
-  const [inputTask, setInputTask] = useState<string>("");
+const ColumnComponent: React.FC<Props> = ({ column, onDelete }) => {
+  const [tasksList, setTasksList] = useState<ITask[]>(column.getTasks());
+  const [columnTitle, setColumnTitle] = useState<string>(column.title);
+  const [taskTitle, setTaskTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
-  const dataProvider: IDataProvider = {
-    createTask(boardId: string, columnId: string, title: string) {
-      const task: TaskInfo = {
-        id: Math.floor(Math.random() * 1000).toString(),
-        boardId: boardId,
-        columnId: columnId,
-        title: title,
-      };
-      return setTasks([...tasks, task]);
-    },
-    deleteColumn(columnId: string) {
-      if (columnId == id)
-        setColumns((current: ColumnInfo[]) => {
-          return current.filter((a) => a.id != columnId);
-        });
-    },
-    getColumnTasks(columnId: string) {
-      // return tasks.filter((a) => a.columnId == columnId);
-      if (columnId == id) return tasks;
-    },
-    updateColumnTitle(columnId: string, title: string) {
-      if (columnId == id) setNewColumnTitle(title);
-    },
-  } as IDataProvider;
+  const createTask = () => {
+    column.createTask(taskTitle);
+    setTasksList(column.getTasks());
+    setTaskTitle("");
+  };
 
-  const column = new Column({ id, title, boardId }, dataProvider);
+  const deleteColumn = () => {
+    column.delete();
+    onDelete();
+  };
 
-  useEffect(() => {
-    column.getTasks();
-    console.log(tasks);
-  }, [tasks]);
+  const onTaskDelete = () => {
+    setTasksList(column.getTasks());
+  };
+
+  const updateColumnTitle = () => {
+    setNewColumnTitle("");
+    column.updateTitle(newColumnTitle);
+    setColumnTitle(column.title);
+  };
 
   return (
-    <div>
-      <h1>{newColumnTitle || title}</h1>
+    <div style={{ marginLeft: "2em" }}>
+      <h1>{columnTitle}</h1>
       <input
         type="text"
-        value={inputColumn}
+        value={newColumnTitle}
         onChange={(e) => {
-          setInputColumn(e.target.value);
+          setNewColumnTitle(e.target.value);
         }}
       />
-      <button onClick={() => column.updateTitle(inputColumn)}>
-        Update Column Title
-      </button>
-      <button onClick={() => column.delete()}>Delete column</button>
+      <button onClick={() => updateColumnTitle()}>Update Column Title</button>
+      <button onClick={() => deleteColumn()}>Delete column</button>
       <input
         type="text"
-        value={inputTask}
-        onChange={(e) => setInputTask(e.target.value)}
+        value={taskTitle}
+        onChange={(e) => setTaskTitle(e.target.value)}
       />
-      <button onClick={() => column.createTask(inputTask)}>Create task</button>
+      <button onClick={() => createTask()}>Create task</button>
 
-      {tasks &&
-        tasks.map((task, i) => (
-          <div key={i + task.id}>
-            <TaskComponent
-              id={task.id}
-              boardId={task.boardId}
-              column={column}
-              columnId={id}
-              setTasks={setTasks}
-              title={task.title}
-            ></TaskComponent>
+      {tasksList &&
+        tasksList.map((task, i) => (
+          <div key={i + task.title}>
+            <TaskComponent task={task} onDelete={onTaskDelete}></TaskComponent>
           </div>
         ))}
     </div>

@@ -2,13 +2,18 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import AppComponent from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { App } from "@alessiosatta/brello-business-logic";
+import { DataProvider } from "./data-provider";
+
+const dataProvider = new DataProvider();
+const app = new App(dataProvider);
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <AppComponent />
+    <AppComponent app={app} />
   </React.StrictMode>
 );
 

@@ -1,93 +1,62 @@
-import {
-  Board,
-  BoardInfo,
-  ColumnInfo,
-  IDataProvider,
-} from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
+import { useState } from "react";
 import ColumnComponent from "./Column";
 
 type Props = {
-  id: string;
-  title: string;
-  setBoardsList: any;
+  board: IBoard;
+  onDelete: () => void;
 };
 
-const BoardComponent: React.FC<Props> = ({ id, title, setBoardsList }) => {
-  const [inputBoard, setInputBoard] = useState<string>("");
-  const [inputColumn, setInputColumn] = useState<string>("");
+const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
+  const [boardTitle, setBoardTitle] = useState<string>(board.title);
+  const [columnsList, setColumnsList] = useState<IColumn[]>(board.getColumns());
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
-  const [columns, setColumns] = useState<ColumnInfo[]>([
-    {
-      boardId: id,
-      id: Math.floor(Math.random() * 1000).toString(),
-      title: "Column 1",
-    },
-  ]);
+  const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
-  const dataProvider: IDataProvider = {
-    createColum(boardId: string, title: string) {
-      const columm: ColumnInfo = {
-        id: Math.floor(Math.random() * 1000).toString(),
-        title: title,
-        boardId: boardId,
-      };
-      return setColumns([...columns, columm]);
-    },
-    deleteBoard(boardId: string) {
-      if (boardId == id)
-        setBoardsList((current: BoardInfo[]) => {
-          return current.filter((a) => a.id != boardId);
-        });
-      setColumns((current: ColumnInfo[]) => {
-        return current.filter((a) => a.boardId != boardId);
-      });
-    },
-    getColumns(boardId: string) {
-      if (boardId == id) return columns;
-    },
-    upateBoardTitle(boardId: string, title: string) {
-      if (boardId == id) setNewBoardTitle(title);
-    },
-  } as IDataProvider;
+  const createColum = () => {
+    board.createColum(newColumnTitle);
+    setColumnsList(board.getColumns());
+  };
 
-  const board = new Board({ id, title }, dataProvider);
+  const deleteBoard = () => {
+    board.delete();
+    onDelete();
+  };
 
-  useEffect(() => {
-    board.getColumns();
-  }, [columns]);
+  const onColumnDelete = () => {
+    setColumnsList(board.getColumns());
+  };
+
+  const updateBoardTitle = () => {
+    setNewBoardTitle("");
+    board.updateTitle(newBoardTitle);
+    setBoardTitle(board.title);
+  };
 
   return (
     <>
-      <h1>{newBoardTitle || title}</h1>
+      <h1>{boardTitle}</h1>
+      <button onClick={() => deleteBoard()}>Delete board</button>
       <input
         type="text"
-        value={inputBoard}
-        onChange={(e) => setInputBoard(e.target.value)}
+        value={newBoardTitle}
+        onChange={(e) => setNewBoardTitle(e.target.value)}
       />
-      <button onClick={() => board.updateTitle(inputBoard)}>
-        Update Board Title
-      </button>
-      <button onClick={() => board.delete()}>Delete board</button>
+      <button onClick={() => updateBoardTitle()}>Update Board Title</button>
       <input
         type="text"
-        value={inputColumn}
-        onChange={(e) => setInputColumn(e.target.value)}
+        value={newColumnTitle}
+        onChange={(e) => setNewColumnTitle(e.target.value)}
       />
-      <button onClick={() => board.createColum(inputColumn)}>
-        Create columm
-      </button>
-      {columns &&
-        columns.map((column, i) => (
-          <div key={i + column.id}>
-            <ColumnComponent
-              id={column.id}
-              title={column.title}
-              boardId={id}
-              setColumns={setColumns}
-            ></ColumnComponent>
-          </div>
-        ))}
+      <button onClick={() => createColum()}>Create columm</button>
+      {columnsList.map((column, i) => (
+        <div key={i + column.title}>
+          <ColumnComponent
+            column={column}
+            onDelete={onColumnDelete}
+          ></ColumnComponent>
+        </div>
+      ))}
     </>
   );
 };
