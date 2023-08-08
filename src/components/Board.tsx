@@ -1,4 +1,5 @@
 import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
+import React from "react";
 import { useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
@@ -73,4 +74,4 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   );
 };
 
-export default BoardComponent;
+export default React.memo(BoardComponent);
