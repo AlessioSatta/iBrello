@@ -1,7 +1,9 @@
 import { App, IBoard } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
 
+import "./style/App.scss";
 import BoardComponent from "./components/Board";
+import { Button } from "react-bootstrap";
 
 type Props = {
   app: App;
@@ -23,14 +25,16 @@ const AppComponent: React.FC<Props> = ({ app }) => {
   };
 
   return (
-    <>
+    <div className="wrapper">
       <input
         type="text"
         value={newBoardTitle}
         onChange={(e) => setNewBoardTitle(e.target.value)}
       />
 
-      <button onClick={() => createBoard()}>Create board</button>
+      <Button onClick={() => createBoard()} size="sm">
+        Create board
+      </Button>
 
       <select
         name="Select Board"
@@ -63,7 +67,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
           </div>
         );
       })}
-    </>
+    </div>
   );
 };
 

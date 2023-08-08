@@ -4,6 +4,7 @@ import AppComponent from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { App } from "@alessiosatta/brello-business-logic";
 import { DataProvider } from "./data-provider";
+import "./style/index.scss";
 
 const dataProvider = new DataProvider();
 const app = new App(dataProvider);

@@ -55,11 +55,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   };
 
   return (
-    <div
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={() => onDrop()}
-      style={{ marginLeft: "2em" }}
-    >
+    <div onDragOver={(e) => e.preventDefault()} onDrop={() => onDrop()}>
       <h1>{columnTitle}</h1>
       <input
         type="text"
@@ -69,13 +65,16 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
         }}
       />
       <button onClick={() => updateColumnTitle()}>Update Column Title</button>
-      <button onClick={() => deleteColumn()}>Delete column</button>
+
       <input
         type="text"
         value={taskTitle}
         onChange={(e) => setTaskTitle(e.target.value)}
       />
+
       <button onClick={() => createTask()}>Create task</button>
+      <br />
+      <button onClick={() => deleteColumn()}>Delete column</button>
 
       {tasksList &&
         tasksList.map((task, i) => (

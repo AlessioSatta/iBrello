@@ -40,7 +40,6 @@ const TaskComponent: React.FC<Props> = ({
       draggable={true}
       onDragOver={(e) => e.preventDefault()}
       onDragStart={() => onDragStart()}
-      style={{ marginLeft: "2em" }}
     >
       <h1>{taskTitle}</h1>
       <input

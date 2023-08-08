@@ -1,7 +1,9 @@
 import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
 import React from "react";
 import { useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
 
+import "../style/Board.scss";
 import { DndManager, DndManagerData } from "../utils";
 import ColumnComponent from "./Column";
 
@@ -46,9 +48,8 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   };
 
   return (
-    <>
+    <div className="wrapper">
       <h1>{boardTitle}</h1>
-      <button onClick={() => deleteBoard()}>Delete board</button>
       <input
         type="text"
         value={newBoardTitle}
@@ -61,16 +62,23 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
         onChange={(e) => setNewColumnTitle(e.target.value)}
       />
       <button onClick={() => createColum()}>Create columm</button>
-      {columnsList.map((column, i) => (
-        <div key={i + column.title}>
-          <ColumnComponent
-            column={column}
-            dndManager={dndManager}
-            onDelete={onColumnDelete}
-          ></ColumnComponent>
-        </div>
-      ))}
-    </>
+      <button onClick={() => deleteBoard()}>Delete board</button>
+      <Container fluid={true}>
+        <Row md={"auto"} xl={{ cols: 12 }} xxl={"auto"} className="column-size">
+          {columnsList.map((column, i) => (
+            <div key={i + column.title}>
+              <Col xl={"auto"}>
+                <ColumnComponent
+                  column={column}
+                  dndManager={dndManager}
+                  onDelete={onColumnDelete}
+                ></ColumnComponent>
+              </Col>
+            </div>
+          ))}
+        </Row>
+      </Container>
+    </div>
   );
 };
 

@@ -1,0 +1,7 @@
+.wrapper {
+    overflow-x: visible;
+    .column-size {
+        flex-wrap: nowrap;
+    }
+}
+@import '~bootstrap/scss/bootstrap';
