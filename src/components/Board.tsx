@@ -1,7 +1,8 @@
-import { IBoard, IColumn, ITask } from "@alessiosatta/brello-business-logic";
+import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
+
+import { DndManager, DndManagerData } from "../utils";
 import ColumnComponent from "./Column";
-import { DndManager } from "../dnd-manager";
 
 type Props = {
   board: IBoard;
@@ -14,7 +15,13 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
-  const dndManager = new DndManager<ITask>();
+  const dndManager = new DndManager<DndManagerData>();
+  dndManager.on("drop", (data) => {
+    if (data) {
+      const { task, targetColumn } = data;
+      if (task && targetColumn) task.moveToColumn(targetColumn);
+    }
+  });
 
   const createColum = () => {
     board.createColum(newColumnTitle);

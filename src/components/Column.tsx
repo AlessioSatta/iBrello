@@ -1,12 +1,12 @@
 import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
 
-import { IDndManager } from "../dnd-manager";
+import { DndManager, DndManagerData } from "../utils";
 import TaskComponent from "./Task";
 
 type Props = {
   column: IColumn;
-  dndManager: IDndManager<ITask>;
+  dndManager: DndManager<DndManagerData>;
   onDelete: () => void;
 };
 
@@ -16,6 +16,16 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   const [taskTitle, setTaskTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
+  const dropHandler = (data: DndManagerData | null) => {
+    console.log(column.title);
+    if (data) {
+      const { sourceColumn, targetColumn } = data;
+      if (column === sourceColumn || column === targetColumn)
+        setTasksList(column.getTasks());
+    }
+  };
+  dndManager.on("drop", dropHandler);
+
   const createTask = () => {
     column.createTask(taskTitle);
     setTasksList(column.getTasks());
@@ -23,16 +33,12 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   };
 
   const deleteColumn = () => {
+    dndManager.off("drop", dropHandler);
     column.delete();
     onDelete();
   };
 
   const onTaskDelete = () => {
-    setTasksList(column.getTasks());
-  };
-
-  const onTaskDrop = (task: ITask) => {
-    task.moveToColumn(column);
     setTasksList(column.getTasks());
   };
 
@@ -44,7 +50,12 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
 
   return (
     <div
-      onDrop={() => dndManager.onDrop(onTaskDrop)}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={() => {
+        const data = dndManager.getData() || {};
+        dndManager.setData({ ...data, targetColumn: column });
+        dndManager.trigger("drop");
+      }}
       style={{ marginLeft: "2em" }}
     >
       <h1>{columnTitle}</h1>
@@ -68,6 +79,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
         tasksList.map((task, i) => (
           <div key={i + task.title}>
             <TaskComponent
+              column={column}
               dndManager={dndManager}
               task={task}
               onDelete={onTaskDelete}
