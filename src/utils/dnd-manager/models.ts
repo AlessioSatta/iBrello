@@ -2,6 +2,7 @@ type DndManagerHandler<TData> = (data: TData | null) => void;
 
 export class DndManager<TData> {
   private _data: TData | null = null;
+
   private _handlers: {
     dragstart: DndManagerHandler<TData>[];
     drop: DndManagerHandler<TData>[];
@@ -10,6 +11,7 @@ export class DndManager<TData> {
   public getData(): TData | null {
     return this._data;
   }
+
   public setData(data: TData | null): void {
     this._data = data;
   }
@@ -20,12 +22,14 @@ export class DndManager<TData> {
   ): void {
     this._handlers[event].push(handler);
   }
+
   public off(
     event: "dragstart" | "drop",
     handler: DndManagerHandler<TData>
   ): void {
     this._handlers[event].filter((a) => a !== handler);
   }
+
   public trigger(event: "dragstart" | "drop"): void {
     this._handlers[event].forEach((a) => a(this._data));
   }

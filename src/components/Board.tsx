@@ -26,6 +26,7 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   const createColum = () => {
     board.createColum(newColumnTitle);
     setColumnsList(board.getColumns());
+    setNewColumnTitle("");
   };
 
   const deleteBoard = () => {

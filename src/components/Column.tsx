@@ -17,7 +17,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
   const dropHandler = (data: DndManagerData | null) => {
-    console.log(column.title);
+    // console.log(column.title);
     if (data) {
       const { sourceColumn, targetColumn } = data;
       if (column === sourceColumn || column === targetColumn)
@@ -38,6 +38,12 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
     onDelete();
   };
 
+  const onDrop = () => {
+    const data = dndManager.getData() || {};
+    dndManager.setData({ ...data, targetColumn: column });
+    dndManager.trigger("drop");
+  };
+
   const onTaskDelete = () => {
     setTasksList(column.getTasks());
   };
@@ -51,11 +57,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
   return (
     <div
       onDragOver={(e) => e.preventDefault()}
-      onDrop={() => {
-        const data = dndManager.getData() || {};
-        dndManager.setData({ ...data, targetColumn: column });
-        dndManager.trigger("drop");
-      }}
+      onDrop={() => onDrop()}
       style={{ marginLeft: "2em" }}
     >
       <h1>{columnTitle}</h1>

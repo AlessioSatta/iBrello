@@ -24,6 +24,11 @@ const TaskComponent: React.FC<Props> = ({
     onDelete();
   };
 
+  const onDragStart = () => {
+    dndManager.setData({ task, sourceColumn: column });
+    dndManager.trigger("dragstart");
+  };
+
   const updateTaskTitle = () => {
     setNewTaskTitle("");
     task.updateTitle(newTaskTitle);
@@ -34,10 +39,7 @@ const TaskComponent: React.FC<Props> = ({
     <div
       draggable={true}
       onDragOver={(e) => e.preventDefault()}
-      onDragStart={() => {
-        dndManager.setData({ task, sourceColumn: column });
-        dndManager.trigger("dragstart");
-      }}
+      onDragStart={() => onDragStart()}
       style={{ marginLeft: "2em" }}
     >
       <h1>{taskTitle}</h1>
