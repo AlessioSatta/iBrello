@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
 import TaskComponent from "./Task";
+import { Button, Card } from "react-bootstrap";
 
 type Props = {
   column: IColumn;
@@ -56,35 +57,47 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
 
   return (
     <div onDragOver={(e) => e.preventDefault()} onDrop={() => onDrop()}>
-      <h1>{columnTitle}</h1>
+      <h2>{columnTitle}</h2>
       <input
         type="text"
         value={newColumnTitle}
+        placeholder="Insert a new Column's title"
         onChange={(e) => {
           setNewColumnTitle(e.target.value);
         }}
       />
-      <button onClick={() => updateColumnTitle()}>Update Column Title</button>
+      <Button size="sm" onClick={() => updateColumnTitle()}>
+        Update Column Title
+      </Button>
 
       <input
         type="text"
         value={taskTitle}
+        placeholder="Insert Task title"
         onChange={(e) => setTaskTitle(e.target.value)}
       />
 
-      <button onClick={() => createTask()}>Create task</button>
+      <Button size="sm" onClick={() => createTask()}>
+        Create task
+      </Button>
       <br />
-      <button onClick={() => deleteColumn()}>Delete column</button>
+      <Button size="sm" variant="danger" onClick={() => deleteColumn()}>
+        Delete column
+      </Button>
 
       {tasksList &&
         tasksList.map((task, i) => (
           <div key={i + task.title}>
-            <TaskComponent
-              column={column}
-              dndManager={dndManager}
-              task={task}
-              onDelete={onTaskDelete}
-            ></TaskComponent>
+            <Card bg={"secondary"}>
+              <Card.Body>
+                <TaskComponent
+                  column={column}
+                  dndManager={dndManager}
+                  task={task}
+                  onDelete={onTaskDelete}
+                ></TaskComponent>
+              </Card.Body>
+            </Card>
           </div>
         ))}
     </div>

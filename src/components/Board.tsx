@@ -1,7 +1,7 @@
 import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
 import React from "react";
 import { useState } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
 import "../style/Board.scss";
 import { DndManager, DndManagerData } from "../utils";
@@ -49,30 +49,46 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
 
   return (
     <div className="wrapper">
-      <h1>{boardTitle}</h1>
-      <input
-        type="text"
-        value={newBoardTitle}
-        onChange={(e) => setNewBoardTitle(e.target.value)}
-      />
-      <button onClick={() => updateBoardTitle()}>Update Board Title</button>
-      <input
-        type="text"
-        value={newColumnTitle}
-        onChange={(e) => setNewColumnTitle(e.target.value)}
-      />
-      <button onClick={() => createColum()}>Create columm</button>
-      <button onClick={() => deleteBoard()}>Delete board</button>
+      <div className="board-nav">
+        <h1 className="board-title">{boardTitle}</h1>
+
+        <div className="board-handlers">
+          <input
+            type="text"
+            value={newBoardTitle}
+            placeholder="Insert a new Board's Title"
+            onChange={(e) => setNewBoardTitle(e.target.value)}
+          />
+          <Button size="sm" onClick={() => updateBoardTitle()}>
+            Update Board Title
+          </Button>
+          <input
+            type="text"
+            value={newColumnTitle}
+            placeholder="Insert Column title"
+            onChange={(e) => setNewColumnTitle(e.target.value)}
+          />
+          <Button size="sm" onClick={() => createColum()}>
+            Create columm
+          </Button>
+          <Button size="sm" variant="danger" onClick={() => deleteBoard()}>
+            Delete board
+          </Button>
+        </div>
+      </div>
+
       <Container fluid={true}>
         <Row md={"auto"} xl={{ cols: 12 }} xxl={"auto"} className="column-size">
           {columnsList.map((column, i) => (
             <div key={i + column.title}>
               <Col xl={"auto"}>
-                <ColumnComponent
-                  column={column}
-                  dndManager={dndManager}
-                  onDelete={onColumnDelete}
-                ></ColumnComponent>
+                <Card bg={"success"}>
+                  <ColumnComponent
+                    column={column}
+                    dndManager={dndManager}
+                    onDelete={onColumnDelete}
+                  ></ColumnComponent>
+                </Card>
               </Col>
             </div>
           ))}

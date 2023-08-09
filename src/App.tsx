@@ -26,33 +26,37 @@ const AppComponent: React.FC<Props> = ({ app }) => {
 
   return (
     <div className="wrapper">
-      <input
-        type="text"
-        value={newBoardTitle}
-        onChange={(e) => setNewBoardTitle(e.target.value)}
-      />
+      <h1 className="app-title">iBrello</h1>
+      <div className="app-handlers">
+        <input
+          type="text"
+          value={newBoardTitle}
+          placeholder="Insert Board title"
+          onChange={(e) => setNewBoardTitle(e.target.value)}
+        />
 
-      <Button onClick={() => createBoard()} size="sm">
-        Create board
-      </Button>
+        <Button onClick={() => createBoard()} size="sm">
+          Create board
+        </Button>
 
-      <select
-        name="Select Board"
-        value={selectedBoard}
-        onChange={(e) => setSelectedBoard(e.target.value)}
-        defaultValue="Default"
-        autoFocus={true}
-      >
-        <option value="Default">Select a Board</option>
-        {boardsList.map((board, i) => (
-          <option value={board.title} key={i + board.title}>
-            {board.title}
-          </option>
-        ))}
-      </select>
+        <select
+          name="Select Board"
+          value={selectedBoard}
+          onChange={(e) => setSelectedBoard(e.target.value)}
+          defaultValue="Default"
+          autoFocus={true}
+        >
+          <option value="Default">Select a Board</option>
+          {boardsList.map((board, i) => (
+            <option value={board.title} key={i + board.title}>
+              {board.title}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {boardsList.map((board, i) => {
-        if (board.title == selectedBoard)
+        if (board.title === selectedBoard)
           return (
             <div key={i + board.title}>
               <BoardComponent
@@ -61,11 +65,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
               ></BoardComponent>
             </div>
           );
-        return (
-          <div>
-            <h1>Select a Board</h1>
-          </div>
-        );
+        return;
       })}
     </div>
   );

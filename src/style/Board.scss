@@ -1,7 +1,15 @@
 .wrapper {
     overflow-x: visible;
+    height: fit-content;
     .column-size {
         flex-wrap: nowrap;
     }
+    .board-title {
+        text-align: center;
+        color: brown;
+    }
+    .board-handlers {
+        text-align: center;
+        margin-bottom: 2em;
+    }
 }
-@import '~bootstrap/scss/bootstrap';

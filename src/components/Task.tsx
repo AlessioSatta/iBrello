@@ -2,6 +2,7 @@ import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
 import { useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
+import { Button } from "react-bootstrap";
 
 type Props = {
   column: IColumn;
@@ -41,14 +42,19 @@ const TaskComponent: React.FC<Props> = ({
       onDragOver={(e) => e.preventDefault()}
       onDragStart={() => onDragStart()}
     >
-      <h1>{taskTitle}</h1>
+      <h3>{taskTitle}</h3>
       <input
         type="text"
         value={newTaskTitle}
+        placeholder="Insert a new Task's title"
         onChange={(e) => setNewTaskTitle(e.target.value)}
       />
-      <button onClick={() => updateTaskTitle()}>Update Task Title</button>
-      <button onClick={() => deleteTask()}>Delete Task</button>
+      <Button size="sm" onClick={() => updateTaskTitle()}>
+        Update Task Title
+      </Button>
+      <Button size="sm" variant="danger" onClick={() => deleteTask()}>
+        Delete Task
+      </Button>
     </div>
   );
 };
