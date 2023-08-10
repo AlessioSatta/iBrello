@@ -1,5 +1,5 @@
 import { App, IBoard } from "@alessiosatta/brello-business-logic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./style/App.scss";
 import BoardComponent from "./components/Board";
@@ -11,14 +11,56 @@ type Props = {
 
 const AppComponent: React.FC<Props> = ({ app }) => {
   const [boardsList, setBoardsList] = useState<IBoard[]>(app.getBoards());
+  const [boardTitleValidation, setBoardTitleValidation] = useState<string>("");
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
+  const [sameBoardTitleAlert, setSameBoardTitleAlter] =
+    useState<boolean>(false);
   const [selectedBoard, setSelectedBoard] = useState<string>("");
 
   const createBoard = () => {
-    app.createBoard(newBoardTitle);
+    if (!sameBoardTitleAlert) app.createBoard(newBoardTitle);
     setBoardsList(app.getBoards());
     setNewBoardTitle("");
   };
+
+  const dynamicBoardList = () =>
+    boardsList.length > 0
+      ? boardsList.map((board, i) => {
+          if (board.title === selectedBoard)
+            return (
+              <div key={i + board.title}>
+                <BoardComponent
+                  board={board}
+                  onDelete={onBoardDelete}
+                  setBoardTitleValidation={setBoardTitleValidation}
+                ></BoardComponent>
+              </div>
+            );
+          return;
+        })
+      : null;
+
+  const dynamicSelectionBoard = (boardsList: IBoard[]) =>
+    boardsList.length > 0 ? (
+      <>
+        <label>Select a board</label>
+        <select
+          name="Board selection"
+          value={selectedBoard}
+          onChange={(e) => setSelectedBoard(e.target.value)}
+          autoFocus={true}
+        >
+          <option>-</option>
+          {boardsList.map((board, i) => (
+            <>
+              <option value={board.title} key={i + board.title}>
+                {board.title}
+              </option>
+            </>
+          ))}
+        </select>
+      </>
+    ) : null;
 
   const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") createBoard();
@@ -26,7 +68,16 @@ const AppComponent: React.FC<Props> = ({ app }) => {
 
   const onBoardDelete = () => {
     setBoardsList(app.getBoards());
+    setBoardTitleValidation("");
   };
+
+  useEffect(() => {
+    if (boardTitleValidation.toLowerCase() != newBoardTitle.toLowerCase()) {
+      setSameBoardTitleAlter(false);
+    } else {
+      setSameBoardTitleAlter(true);
+    }
+  }, [boardTitleValidation, newBoardTitle]);
 
   return (
     <div className="wrapper">
@@ -40,38 +91,18 @@ const AppComponent: React.FC<Props> = ({ app }) => {
           onKeyDown={(e) => handlerKeyDown(e)}
         />
 
-        <Button onClick={() => createBoard()} size="sm">
+        <Button
+          onClick={() => createBoard()}
+          size="sm"
+          disabled={sameBoardTitleAlert}
+        >
           Create board
         </Button>
 
-        <select
-          name="Select Board"
-          value={selectedBoard}
-          onChange={(e) => setSelectedBoard(e.target.value)}
-          defaultValue="Default"
-          autoFocus={true}
-        >
-          <option value="Default">Select a Board</option>
-          {boardsList.map((board, i) => (
-            <option value={board.title} key={i + board.title}>
-              {board.title}
-            </option>
-          ))}
-        </select>
+        {dynamicSelectionBoard(boardsList)}
       </div>
 
-      {boardsList.map((board, i) => {
-        if (board.title === selectedBoard)
-          return (
-            <div key={i + board.title}>
-              <BoardComponent
-                board={board}
-                onDelete={onBoardDelete}
-              ></BoardComponent>
-            </div>
-          );
-        return;
-      })}
+      {dynamicBoardList()}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
@@ -10,9 +10,14 @@ import ColumnComponent from "./Column";
 type Props = {
   board: IBoard;
   onDelete: () => void;
+  setBoardTitleValidation: any;
 };
 
-const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
+const BoardComponent: React.FC<Props> = ({
+  board,
+  onDelete,
+  setBoardTitleValidation,
+}) => {
   const [boardTitle, setBoardTitle] = useState<string>(board.title);
   const [columnsList, setColumnsList] = useState<IColumn[]>(board.getColumns());
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
@@ -64,6 +69,10 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
     board.updateTitle(newBoardTitle);
     setBoardTitle(board.title);
   };
+
+  useEffect(() => {
+    setBoardTitleValidation(board.title);
+  }, []);
 
   return (
     <div className="wrapper">

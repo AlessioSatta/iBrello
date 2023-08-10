@@ -6,7 +6,10 @@ import {
 } from "@alessiosatta/brello-business-logic";
 
 export class DataProvider implements IDataProvider {
-  private _boards: BoardInfo[] = [{ id: "1", title: "Board 1" }];
+  private _boards: BoardInfo[] = [
+    { id: "1", title: "Board 1" },
+    { id: "2", title: "Board 2" },
+  ];
   private _columns: ColumnInfo[] = [
     { boardId: "1", id: "1", title: "Column 1" },
     { boardId: "1", id: "2", title: "Column 2" },
