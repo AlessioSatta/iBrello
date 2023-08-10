@@ -83,7 +83,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
       <Button size="sm" onClick={() => updateColumnTitle()}>
         Update Column Title
       </Button>
-
+      <br />
       <input
         type="text"
         value={taskTitle}
@@ -95,12 +95,14 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
         Create task
       </Button>
       <br />
+
       <Button size="sm" variant="danger" onClick={() => handleDelete()}>
         Delete column
       </Button>
+
       {deleteConfirmation && (
         <>
-          <h1>Do you really want delete this column and all it's content?</h1>
+          <h1>Delete this column and all it's content?</h1>
           <Button size="lg" variant="danger" onClick={() => deleteConfirmed()}>
             Yes
           </Button>

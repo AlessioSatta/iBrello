@@ -76,6 +76,9 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
           <Button size="sm" onClick={() => updateBoardTitle()}>
             Update Board Title
           </Button>
+
+          <br />
+
           <input
             type="text"
             value={newColumnTitle}
@@ -85,14 +88,13 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
           <Button size="sm" onClick={() => createColum()}>
             Create columm
           </Button>
+
           <Button size="sm" variant="danger" onClick={() => handleDelete()}>
             Delete board
           </Button>
           {deleteConfirmation && (
             <>
-              <h1>
-                Do you really want delete this board and all it's content?
-              </h1>
+              <h1>Delete this board and all it's content?</h1>
               <Button
                 size="lg"
                 variant="danger"

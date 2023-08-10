@@ -17,12 +17,26 @@ const TaskComponent: React.FC<Props> = ({
   task,
   onDelete,
 }) => {
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
   const [taskTitle, setTaskTitle] = useState<string>(task.title);
 
   const deleteTask = () => {
     task.delete();
     onDelete();
+  };
+
+  const handleDelete = () => {
+    setDeleteConfirmation(true);
+  };
+
+  const deleteConfirmed = () => {
+    deleteTask();
+    setDeleteConfirmation(false);
+  };
+
+  const deleteDenied = () => {
+    setDeleteConfirmation(false);
   };
 
   const onDragStart = () => {
@@ -43,6 +57,7 @@ const TaskComponent: React.FC<Props> = ({
       onDragStart={() => onDragStart()}
     >
       <h3>{taskTitle}</h3>
+
       <input
         type="text"
         value={newTaskTitle}
@@ -52,9 +67,22 @@ const TaskComponent: React.FC<Props> = ({
       <Button size="sm" onClick={() => updateTaskTitle()}>
         Update Task Title
       </Button>
-      <Button size="sm" variant="danger" onClick={() => deleteTask()}>
+
+      <Button size="sm" variant="danger" onClick={() => handleDelete()}>
         Delete Task
       </Button>
+
+      {deleteConfirmation && (
+        <>
+          <h1>Delete this task?</h1>
+          <Button size="lg" variant="danger" onClick={() => deleteConfirmed()}>
+            Yes
+          </Button>
+          <Button size="lg" onClick={() => deleteDenied()}>
+            No!
+          </Button>
+        </>
+      )}
     </div>
   );
 };
