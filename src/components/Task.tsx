@@ -1,5 +1,5 @@
 import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
 import { Button } from "react-bootstrap";
@@ -9,6 +9,7 @@ type Props = {
   dndManager: DndManager<DndManagerData>;
   task: ITask;
   onDelete: () => void;
+  setTaskTitleValidation: any;
 };
 
 const TaskComponent: React.FC<Props> = ({
@@ -16,6 +17,7 @@ const TaskComponent: React.FC<Props> = ({
   dndManager,
   task,
   onDelete,
+  setTaskTitleValidation,
 }) => {
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
@@ -53,6 +55,10 @@ const TaskComponent: React.FC<Props> = ({
     task.updateTitle(newTaskTitle);
     setTaskTitle(task.title);
   };
+
+  useEffect(() => {
+    setTaskTitleValidation(task.title);
+  }, []);
 
   return (
     <div

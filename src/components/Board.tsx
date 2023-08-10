@@ -20,9 +20,13 @@ const BoardComponent: React.FC<Props> = ({
 }) => {
   const [boardTitle, setBoardTitle] = useState<string>(board.title);
   const [columnsList, setColumnsList] = useState<IColumn[]>(board.getColumns());
+  const [columnTitleValidation, setColumnTitleValidation] =
+    useState<string>("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
+  const [sameColumnTitleAlert, setSameColumnTitleAlter] =
+    useState<boolean>(false);
 
   const dndManager = new DndManager<DndManagerData>();
   dndManager.on("drop", (data) => {
@@ -33,7 +37,7 @@ const BoardComponent: React.FC<Props> = ({
   });
 
   const createColum = () => {
-    board.createColum(newColumnTitle);
+    if (!sameColumnTitleAlert) board.createColum(newColumnTitle);
     setColumnsList(board.getColumns());
     setNewColumnTitle("");
   };
@@ -72,7 +76,12 @@ const BoardComponent: React.FC<Props> = ({
 
   useEffect(() => {
     setBoardTitleValidation(board.title);
-  }, []);
+    if (columnTitleValidation.toLowerCase() != newColumnTitle.toLowerCase()) {
+      setSameColumnTitleAlter(false);
+    } else {
+      setSameColumnTitleAlter(true);
+    }
+  }, [columnTitleValidation, newColumnTitle, board.title]);
 
   return (
     <div className="wrapper">
@@ -99,7 +108,11 @@ const BoardComponent: React.FC<Props> = ({
             onChange={(e) => setNewColumnTitle(e.target.value)}
             onKeyDown={(e) => handlerKeyDown(e)}
           />
-          <Button size="sm" onClick={() => createColum()}>
+          <Button
+            size="sm"
+            onClick={() => createColum()}
+            disabled={sameColumnTitleAlert}
+          >
             Create columm
           </Button>
 
@@ -134,6 +147,7 @@ const BoardComponent: React.FC<Props> = ({
                     column={column}
                     dndManager={dndManager}
                     onDelete={onColumnDelete}
+                    setColumnTitleValidation={setColumnTitleValidation}
                   ></ColumnComponent>
                 </Card>
               </Col>

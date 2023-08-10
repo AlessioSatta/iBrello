@@ -17,12 +17,6 @@ const AppComponent: React.FC<Props> = ({ app }) => {
     useState<boolean>(false);
   const [selectedBoard, setSelectedBoard] = useState<string>("");
 
-  const createBoard = () => {
-    if (!sameBoardTitleAlert) app.createBoard(newBoardTitle);
-    setBoardsList(app.getBoards());
-    setNewBoardTitle("");
-  };
-
   const dynamicBoardList = () =>
     boardsList.length > 0
       ? boardsList.map((board, i) => {
@@ -61,6 +55,12 @@ const AppComponent: React.FC<Props> = ({ app }) => {
         </select>
       </>
     ) : null;
+
+  const createBoard = () => {
+    if (!sameBoardTitleAlert) app.createBoard(newBoardTitle);
+    setBoardsList(app.getBoards());
+    setNewBoardTitle("");
+  };
 
   const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") createBoard();
