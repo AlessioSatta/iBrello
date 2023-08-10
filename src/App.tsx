@@ -20,6 +20,10 @@ const AppComponent: React.FC<Props> = ({ app }) => {
     setNewBoardTitle("");
   };
 
+  const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") createBoard();
+  };
+
   const onBoardDelete = () => {
     setBoardsList(app.getBoards());
   };
@@ -33,6 +37,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
           value={newBoardTitle}
           placeholder="Insert Board title"
           onChange={(e) => setNewBoardTitle(e.target.value)}
+          onKeyDown={(e) => handlerKeyDown(e)}
         />
 
         <Button onClick={() => createBoard()} size="sm">

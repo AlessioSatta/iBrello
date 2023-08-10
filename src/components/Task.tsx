@@ -30,6 +30,10 @@ const TaskComponent: React.FC<Props> = ({
     setDeleteConfirmation(true);
   };
 
+  const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") updateTaskTitle();
+  };
+
   const deleteConfirmed = () => {
     deleteTask();
     setDeleteConfirmation(false);
@@ -63,6 +67,7 @@ const TaskComponent: React.FC<Props> = ({
         value={newTaskTitle}
         placeholder="Insert a new Task's title"
         onChange={(e) => setNewTaskTitle(e.target.value)}
+        onKeyDown={(e) => handlerKeyDown(e)}
       />
       <Button size="sm" onClick={() => updateTaskTitle()}>
         Update Task Title

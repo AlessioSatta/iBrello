@@ -42,6 +42,10 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
     setDeleteConfirmation(true);
   };
 
+  const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") createColum();
+  };
+
   const deleteConfirmed = () => {
     deleteBoard();
     setDeleteConfirmation(false);
@@ -84,6 +88,7 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
             value={newColumnTitle}
             placeholder="Insert Column title"
             onChange={(e) => setNewColumnTitle(e.target.value)}
+            onKeyDown={(e) => handlerKeyDown(e)}
           />
           <Button size="sm" onClick={() => createColum()}>
             Create columm

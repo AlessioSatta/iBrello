@@ -44,6 +44,10 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
     setDeleteConfirmation(true);
   };
 
+  const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") createTask();
+  };
+
   const deleteConfirmed = () => {
     deleteColumn();
     setDeleteConfirmation(false);
@@ -89,6 +93,7 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
         value={taskTitle}
         placeholder="Insert Task title"
         onChange={(e) => setTaskTitle(e.target.value)}
+        onKeyDown={(e) => handlerKeyDown(e)}
       />
 
       <Button size="sm" onClick={() => createTask()}>
