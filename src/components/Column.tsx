@@ -12,10 +12,11 @@ type Props = {
 };
 
 const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
-  const [tasksList, setTasksList] = useState<ITask[]>(column.getTasks());
   const [columnTitle, setColumnTitle] = useState<string>(column.title);
-  const [taskTitle, setTaskTitle] = useState<string>("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
+  const [tasksList, setTasksList] = useState<ITask[]>(column.getTasks());
+  const [taskTitle, setTaskTitle] = useState<string>("");
 
   const dropHandler = (data: DndManagerData | null) => {
     // console.log(column.title);
@@ -37,6 +38,19 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
     dndManager.off("drop", dropHandler);
     column.delete();
     onDelete();
+  };
+
+  const handleDelete = () => {
+    setDeleteConfirmation(true);
+  };
+
+  const deleteConfirmed = () => {
+    deleteColumn();
+    setDeleteConfirmation(false);
+  };
+
+  const deleteDenied = () => {
+    setDeleteConfirmation(false);
   };
 
   const onDrop = () => {
@@ -81,9 +95,20 @@ const ColumnComponent: React.FC<Props> = ({ column, dndManager, onDelete }) => {
         Create task
       </Button>
       <br />
-      <Button size="sm" variant="danger" onClick={() => deleteColumn()}>
+      <Button size="sm" variant="danger" onClick={() => handleDelete()}>
         Delete column
       </Button>
+      {deleteConfirmation && (
+        <>
+          <h1>Do you really want delete this column and all it's content?</h1>
+          <Button size="lg" variant="danger" onClick={() => deleteConfirmed()}>
+            Yes
+          </Button>
+          <Button size="lg" onClick={() => deleteDenied()}>
+            No!
+          </Button>
+        </>
+      )}
 
       {tasksList &&
         tasksList.map((task, i) => (
