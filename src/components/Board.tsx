@@ -15,6 +15,7 @@ type Props = {
 const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   const [boardTitle, setBoardTitle] = useState<string>(board.title);
   const [columnsList, setColumnsList] = useState<IColumn[]>(board.getColumns());
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
 
@@ -35,6 +36,23 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
   const deleteBoard = () => {
     board.delete();
     onDelete();
+  };
+
+  const handleDelete = () => {
+    setDeleteConfirmation(true);
+  };
+
+  const handlerKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") createColum();
+  };
+
+  const deleteConfirmed = () => {
+    deleteBoard();
+    setDeleteConfirmation(false);
+  };
+
+  const deleteDenied = () => {
+    setDeleteConfirmation(false);
   };
 
   const onColumnDelete = () => {
@@ -62,18 +80,38 @@ const BoardComponent: React.FC<Props> = ({ board, onDelete }) => {
           <Button size="sm" onClick={() => updateBoardTitle()}>
             Update Board Title
           </Button>
+
+          <br />
+
           <input
             type="text"
             value={newColumnTitle}
             placeholder="Insert Column title"
             onChange={(e) => setNewColumnTitle(e.target.value)}
+            onKeyDown={(e) => handlerKeyDown(e)}
           />
           <Button size="sm" onClick={() => createColum()}>
             Create columm
           </Button>
-          <Button size="sm" variant="danger" onClick={() => deleteBoard()}>
+
+          <Button size="sm" variant="danger" onClick={() => handleDelete()}>
             Delete board
           </Button>
+          {deleteConfirmation && (
+            <>
+              <h1>Delete this board and all it's content?</h1>
+              <Button
+                size="lg"
+                variant="danger"
+                onClick={() => deleteConfirmed()}
+              >
+                Yes
+              </Button>
+              <Button size="lg" onClick={() => deleteDenied()}>
+                No!
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
