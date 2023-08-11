@@ -83,7 +83,10 @@ const ColumnComponent: React.FC<Props> = ({
 
   useEffect(() => {
     setColumnTitleValidation(column.title);
-    if (taskTitleValidation.toLowerCase() != taskTitle.toLowerCase()) {
+    if (
+      taskTitleValidation.toLowerCase() != taskTitle.toLowerCase() &&
+      taskTitle !== ""
+    ) {
       setSameTaskTitleAlter(false);
     } else {
       setSameTaskTitleAlter(true);

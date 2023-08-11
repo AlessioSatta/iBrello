@@ -76,7 +76,10 @@ const BoardComponent: React.FC<Props> = ({
 
   useEffect(() => {
     setBoardTitleValidation(board.title);
-    if (columnTitleValidation.toLowerCase() != newColumnTitle.toLowerCase()) {
+    if (
+      columnTitleValidation.toLowerCase() != newColumnTitle.toLowerCase() &&
+      newColumnTitle !== ""
+    ) {
       setSameColumnTitleAlter(false);
     } else {
       setSameColumnTitleAlter(true);

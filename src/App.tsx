@@ -72,7 +72,10 @@ const AppComponent: React.FC<Props> = ({ app }) => {
   };
 
   useEffect(() => {
-    if (boardTitleValidation.toLowerCase() != newBoardTitle.toLowerCase()) {
+    if (
+      boardTitleValidation.toLowerCase() != newBoardTitle.toLowerCase() &&
+      newBoardTitle !== ""
+    ) {
       setSameBoardTitleAlter(false);
     } else {
       setSameBoardTitleAlter(true);
