@@ -22,7 +22,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
       ? boardsList.map((board, i) => {
           if (board.title === selectedBoard)
             return (
-              <div key={i + board.title}>
+              <div key={board.title}>
                 <BoardComponent
                   board={board}
                   onDelete={onBoardDelete}

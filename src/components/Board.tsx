@@ -84,7 +84,7 @@ const BoardComponent: React.FC<Props> = ({
     } else {
       setSameColumnTitleAlter(true);
     }
-  }, [columnTitleValidation, newColumnTitle, board.title]);
+  }, [columnTitleValidation, newColumnTitle]);
 
   return (
     <div className="wrapper">
@@ -142,8 +142,8 @@ const BoardComponent: React.FC<Props> = ({
 
       <Container fluid={true}>
         <Row md={"auto"} xl={{ cols: 12 }} xxl={"auto"} className="column-size">
-          {columnsList.map((column, i) => (
-            <div key={i + column.title}>
+          {columnsList.map((column) => (
+            <div key={column.title}>
               <Col xl={"auto"}>
                 <Card bg={"success"}>
                   <ColumnComponent
