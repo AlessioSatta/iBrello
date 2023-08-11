@@ -54,16 +54,6 @@ export class DataProvider implements IDataProvider {
 
   public deleteBoard(boardId: string): void {
     const boardToDelete = this._boards.find((a) => a.id == boardId);
-    // const boardKeys = Object.keys(localStorage);
-    // let getBoardsFromStorage;
-    // let parsedBoardsFromStorage: BoardInfo[] = [];
-    // for (let i = 0; i < localStorage.length; i++) {
-    //   getBoardsFromStorage = localStorage.getItem(boardKeys[i]) || "{}";
-    //   parsedBoardsFromStorage[i] = JSON.parse(getBoardsFromStorage);
-    //   if (parsedBoardsFromStorage[i].id === boardKeys[i]) {
-    //     localStorage.removeItem(boardKeys[i]);
-    //   }
-    // }
     if (boardToDelete)
       this._boards.splice(this._boards.indexOf(boardToDelete), 1);
     this._columns = this._columns.filter((a) => a.boardId != boardId);
