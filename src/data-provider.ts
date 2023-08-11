@@ -107,6 +107,6 @@ export class DataProvider implements IDataProvider {
   }
 
   private _generateId(): string {
-    return Math.floor(Math.random() * 1000).toString();
+    return Math.floor(Math.random() * Date.now()).toString(36);
   }
 }

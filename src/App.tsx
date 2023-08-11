@@ -44,7 +44,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
           onChange={(e) => setSelectedBoard(e.target.value)}
           autoFocus={true}
         >
-          <option>-</option>
+          <option key={"Default"}>-</option>
           {boardsList.map((board, i) => (
             <>
               <option value={board.title} key={i + board.title}>
