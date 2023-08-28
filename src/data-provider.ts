@@ -64,7 +64,10 @@ export class DataProvider implements IDataProvider {
     const taskToDelete = this._tasks.find((a) => a.id == taskId);
     if (taskToDelete) this._tasks.splice(this._tasks.indexOf(taskToDelete), 1);
 
-    localStorage.removeItem(`taskId-${taskId}`);
+    let fromLocalStorage = Object.keys(localStorage).filter((a) =>
+      a.includes(`${taskId}`)
+    );
+    fromLocalStorage.map((a) => localStorage.removeItem(a));
   }
 
   public deleteBoard(boardId: string): void {
