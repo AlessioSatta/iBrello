@@ -31,12 +31,12 @@ const BoardComponent: React.FC<Props> = ({ board, boardsList, onDelete }) => {
   const createColum = () => {
     if (
       !columnsList.length ||
-      (!columnsList.find(
+      !columnsList.find(
         (a) => a.title.toLowerCase() == newColumnTitle.toLowerCase()
-      ) &&
-        newColumnTitle !== "")
+      )
     ) {
-      board.createColum(newColumnTitle);
+      if (newColumnTitle !== "") board.createColum(newColumnTitle);
+      else alert("Cannot create a column without a title");
     } else {
       alert("This column already exist");
     }

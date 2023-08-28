@@ -31,6 +31,9 @@ export class DataProvider implements IDataProvider {
     );
     const taskToUpdateStorage = currentTask.find((a) => a.id == taskId);
     if (taskToUpdateStorage) {
+      localStorage.removeItem(
+        `taskId-${taskToUpdateStorage.boardId}-${taskToUpdateStorage.columnId}-${taskId}`
+      );
       taskToUpdateStorage.columnId = targetColumnId;
       localStorage.setItem(
         `taskId-${taskToUpdateStorage.boardId}-${taskToUpdateStorage.columnId}-${taskId}`,

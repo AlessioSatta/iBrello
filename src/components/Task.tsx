@@ -57,7 +57,8 @@ const TaskComponent: React.FC<Props> = ({
         (a) => a.title.toLowerCase() == newTaskTitle.toLowerCase()
       )
     ) {
-      task.updateTitle(newTaskTitle);
+      if (newTaskTitle !== "") task.updateTitle(newTaskTitle);
+      else alert("Cannot update task without a title");
     } else {
       alert("This task already exist");
     }

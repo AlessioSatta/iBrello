@@ -56,12 +56,12 @@ const AppComponent: React.FC<Props> = ({ app }) => {
   const createBoard = () => {
     if (
       !boardsList.length ||
-      (!boardsList.find(
+      !boardsList.find(
         (a) => a.title.toLowerCase() == newBoardTitle.toLowerCase()
-      ) &&
-        newBoardTitle !== "")
+      )
     ) {
-      app.createBoard(newBoardTitle);
+      if (newBoardTitle !== "") app.createBoard(newBoardTitle);
+      else alert("Cannot creat a column without a title");
     } else {
       alert("This board already exist");
     }
