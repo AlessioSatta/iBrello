@@ -1,5 +1,5 @@
 import { App, IBoard } from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import "./style/App.scss";
 import BoardComponent from "./components/Board";
@@ -11,10 +11,7 @@ type Props = {
 
 const AppComponent: React.FC<Props> = ({ app }) => {
   const [boardsList, setBoardsList] = useState<IBoard[]>(app.getBoards());
-  const [boardTitleValidation, setBoardTitleValidation] = useState<string>("");
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
-  const [sameBoardTitleAlert, setSameBoardTitleAlter] =
-    useState<boolean>(false);
   const [selectedBoard, setSelectedBoard] = useState<string>("");
 
   const dynamicBoardList = () =>
@@ -26,7 +23,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
                 <BoardComponent
                   board={board}
                   onDelete={onBoardDelete}
-                  setBoardTitleValidation={setBoardTitleValidation}
+                  boardsList={boardsList}
                 ></BoardComponent>
               </div>
             );
@@ -57,7 +54,17 @@ const AppComponent: React.FC<Props> = ({ app }) => {
     ) : null;
 
   const createBoard = () => {
-    if (!sameBoardTitleAlert) app.createBoard(newBoardTitle);
+    if (
+      !boardsList.length ||
+      (!boardsList.find(
+        (a) => a.title.toLowerCase() == newBoardTitle.toLowerCase()
+      ) &&
+        newBoardTitle !== "")
+    ) {
+      app.createBoard(newBoardTitle);
+    } else {
+      alert("This board already exist");
+    }
     setBoardsList(app.getBoards());
     setNewBoardTitle("");
   };
@@ -68,19 +75,7 @@ const AppComponent: React.FC<Props> = ({ app }) => {
 
   const onBoardDelete = () => {
     setBoardsList(app.getBoards());
-    setBoardTitleValidation("");
   };
-
-  useEffect(() => {
-    if (
-      boardTitleValidation.toLowerCase() != newBoardTitle.toLowerCase() &&
-      newBoardTitle !== ""
-    ) {
-      setSameBoardTitleAlter(false);
-    } else {
-      setSameBoardTitleAlter(true);
-    }
-  }, [boardTitleValidation, newBoardTitle]);
 
   return (
     <div className="wrapper">
@@ -89,16 +84,12 @@ const AppComponent: React.FC<Props> = ({ app }) => {
         <input
           type="text"
           value={newBoardTitle}
-          placeholder="Insert Board title"
+          placeholder="Insert Board Title"
           onChange={(e) => setNewBoardTitle(e.target.value)}
           onKeyDown={(e) => handlerKeyDown(e)}
         />
 
-        <Button
-          onClick={() => createBoard()}
-          size="sm"
-          disabled={sameBoardTitleAlert}
-        >
+        <Button onClick={() => createBoard()} size="sm">
           Create board
         </Button>
 

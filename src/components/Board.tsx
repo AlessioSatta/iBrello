@@ -1,5 +1,5 @@
 import { IBoard, IColumn } from "@alessiosatta/brello-business-logic";
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
 
@@ -9,24 +9,16 @@ import ColumnComponent from "./Column";
 
 type Props = {
   board: IBoard;
+  boardsList: IBoard[];
   onDelete: () => void;
-  setBoardTitleValidation: any;
 };
 
-const BoardComponent: React.FC<Props> = ({
-  board,
-  onDelete,
-  setBoardTitleValidation,
-}) => {
+const BoardComponent: React.FC<Props> = ({ board, boardsList, onDelete }) => {
   const [boardTitle, setBoardTitle] = useState<string>(board.title);
   const [columnsList, setColumnsList] = useState<IColumn[]>(board.getColumns());
-  const [columnTitleValidation, setColumnTitleValidation] =
-    useState<string>("");
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newBoardTitle, setNewBoardTitle] = useState<string>("");
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
-  const [sameColumnTitleAlert, setSameColumnTitleAlter] =
-    useState<boolean>(false);
 
   const dndManager = new DndManager<DndManagerData>();
   dndManager.on("drop", (data) => {
@@ -37,7 +29,17 @@ const BoardComponent: React.FC<Props> = ({
   });
 
   const createColum = () => {
-    if (!sameColumnTitleAlert) board.createColum(newColumnTitle);
+    if (
+      !columnsList.length ||
+      (!columnsList.find(
+        (a) => a.title.toLowerCase() == newColumnTitle.toLowerCase()
+      ) &&
+        newColumnTitle !== "")
+    ) {
+      board.createColum(newColumnTitle);
+    } else {
+      alert("This column already exist");
+    }
     setColumnsList(board.getColumns());
     setNewColumnTitle("");
   };
@@ -70,21 +72,17 @@ const BoardComponent: React.FC<Props> = ({
 
   const updateBoardTitle = () => {
     setNewBoardTitle("");
-    board.updateTitle(newBoardTitle);
+    if (
+      !boardsList.find(
+        (a) => a.title.toLowerCase() == newBoardTitle.toLowerCase()
+      )
+    ) {
+      board.updateTitle(newBoardTitle);
+    } else {
+      alert("This board already exist");
+    }
     setBoardTitle(board.title);
   };
-
-  useEffect(() => {
-    setBoardTitleValidation(board.title);
-    if (
-      columnTitleValidation.toLowerCase() != newColumnTitle.toLowerCase() &&
-      newColumnTitle !== ""
-    ) {
-      setSameColumnTitleAlter(false);
-    } else {
-      setSameColumnTitleAlter(true);
-    }
-  }, [columnTitleValidation, newColumnTitle]);
 
   return (
     <div className="wrapper">
@@ -111,11 +109,7 @@ const BoardComponent: React.FC<Props> = ({
             onChange={(e) => setNewColumnTitle(e.target.value)}
             onKeyDown={(e) => handlerKeyDown(e)}
           />
-          <Button
-            size="sm"
-            onClick={() => createColum()}
-            disabled={sameColumnTitleAlert}
-          >
+          <Button size="sm" onClick={() => createColum()}>
             Create columm
           </Button>
 
@@ -148,9 +142,9 @@ const BoardComponent: React.FC<Props> = ({
                 <Card bg={"success"}>
                   <ColumnComponent
                     column={column}
+                    columnsList={columnsList}
                     dndManager={dndManager}
                     onDelete={onColumnDelete}
-                    setColumnTitleValidation={setColumnTitleValidation}
                   ></ColumnComponent>
                 </Card>
               </Col>

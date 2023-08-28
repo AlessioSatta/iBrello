@@ -1,5 +1,5 @@
 import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
 import TaskComponent from "./Task";
@@ -7,24 +7,22 @@ import { Button, Card } from "react-bootstrap";
 
 type Props = {
   column: IColumn;
+  columnsList: IColumn[];
   dndManager: DndManager<DndManagerData>;
   onDelete: () => void;
-  setColumnTitleValidation: any;
 };
 
 const ColumnComponent: React.FC<Props> = ({
   column,
+  columnsList,
   dndManager,
   onDelete,
-  setColumnTitleValidation,
 }) => {
   const [columnTitle, setColumnTitle] = useState<string>(column.title);
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState<string>("");
-  const [sameTaskTitleAlert, setSameTaskTitleAlter] = useState<boolean>(false);
   const [tasksList, setTasksList] = useState<ITask[]>(column.getTasks());
   const [taskTitle, setTaskTitle] = useState<string>("");
-  const [taskTitleValidation, setTaskTitleValidation] = useState<string>("");
 
   const dropHandler = (data: DndManagerData | null) => {
     // console.log(column.title);
@@ -37,7 +35,17 @@ const ColumnComponent: React.FC<Props> = ({
   dndManager.on("drop", dropHandler);
 
   const createTask = () => {
-    if (!sameTaskTitleAlert) column.createTask(taskTitle);
+    if (
+      !tasksList.length ||
+      (!tasksList.find(
+        (a) => a.title.toLowerCase() == taskTitle.toLowerCase()
+      ) &&
+        taskTitle !== "")
+    ) {
+      column.createTask(taskTitle);
+    } else {
+      alert("This task already exist");
+    }
     setTasksList(column.getTasks());
     setTaskTitle("");
   };
@@ -77,21 +85,17 @@ const ColumnComponent: React.FC<Props> = ({
 
   const updateColumnTitle = () => {
     setNewColumnTitle("");
-    column.updateTitle(newColumnTitle);
+    if (
+      !columnsList.find(
+        (a) => a.title.toLowerCase() == newColumnTitle.toLowerCase()
+      )
+    ) {
+      column.updateTitle(newColumnTitle);
+    } else {
+      alert("This column already exist");
+    }
     setColumnTitle(column.title);
   };
-
-  useEffect(() => {
-    setColumnTitleValidation(column.title);
-    if (
-      taskTitleValidation.toLowerCase() != taskTitle.toLowerCase() &&
-      taskTitle !== ""
-    ) {
-      setSameTaskTitleAlter(false);
-    } else {
-      setSameTaskTitleAlter(true);
-    }
-  }, [taskTitleValidation, taskTitle]);
 
   return (
     <div onDragOver={(e) => e.preventDefault()} onDrop={() => onDrop()}>
@@ -116,11 +120,7 @@ const ColumnComponent: React.FC<Props> = ({
         onKeyDown={(e) => handlerKeyDown(e)}
       />
 
-      <Button
-        size="sm"
-        onClick={() => createTask()}
-        disabled={sameTaskTitleAlert}
-      >
+      <Button size="sm" onClick={() => createTask()}>
         Create task
       </Button>
       <br />
@@ -150,8 +150,8 @@ const ColumnComponent: React.FC<Props> = ({
                   column={column}
                   dndManager={dndManager}
                   task={task}
+                  tasksList={tasksList}
                   onDelete={onTaskDelete}
-                  setTaskTitleValidation={setTaskTitleValidation}
                 ></TaskComponent>
               </Card.Body>
             </Card>

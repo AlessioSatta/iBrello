@@ -33,10 +33,11 @@ export class DataProvider implements IDataProvider {
     if (taskToUpdateStorage) {
       taskToUpdateStorage.columnId = targetColumnId;
       localStorage.setItem(
-        `taskId-${taskId}`,
+        `taskId-${taskToUpdateStorage.boardId}-${taskToUpdateStorage.columnId}-${taskId}`,
         JSON.stringify(taskToUpdateStorage)
       );
     }
+    console.log(taskToUpdateStorage);
 
     const taskToUpdateColumn = this._tasks.find((a) => a.id == taskId);
     if (taskToUpdateColumn) taskToUpdateColumn.columnId = targetColumnId;
@@ -46,10 +47,21 @@ export class DataProvider implements IDataProvider {
     const columnToDelete = this._columns.find((a) => a.id == columnId);
     if (columnToDelete)
       this._columns.splice(this._columns.indexOf(columnToDelete), 1);
+
+    localStorage.removeItem(`columnId-${columnToDelete?.boardId}-${columnId}`);
+
+    let tasksFromLocalStorage = Object.keys(localStorage).filter((a) =>
+      a.includes(`taskId-${columnToDelete?.boardId}-${columnId}`)
+    );
+    for (let i = 0; i < tasksFromLocalStorage.length; i++) {
+      localStorage.removeItem(tasksFromLocalStorage[i]);
+    }
   }
   public deleteTask(taskId: string): void {
     const taskToDelete = this._tasks.find((a) => a.id == taskId);
     if (taskToDelete) this._tasks.splice(this._tasks.indexOf(taskToDelete), 1);
+
+    localStorage.removeItem(`taskId-${taskId}`);
   }
 
   public deleteBoard(boardId: string): void {
@@ -58,6 +70,22 @@ export class DataProvider implements IDataProvider {
       this._boards.splice(this._boards.indexOf(boardToDelete), 1);
     this._columns = this._columns.filter((a) => a.boardId != boardId);
     this._tasks = this._tasks.filter((a) => a.boardId != boardId);
+
+    localStorage.removeItem(`boardId-${boardId}`);
+
+    let columnsFromLocalStorage = Object.keys(localStorage).filter((a) =>
+      a.startsWith(`columnId-${boardId}`)
+    );
+    for (let i = 0; i < columnsFromLocalStorage.length; i++) {
+      localStorage.removeItem(columnsFromLocalStorage[i]);
+    }
+
+    let tasksFromLocalStorage = Object.keys(localStorage).filter((a) =>
+      a.startsWith(`taskId-${boardId}`)
+    );
+    for (let i = 0; i < tasksFromLocalStorage.length; i++) {
+      localStorage.removeItem(tasksFromLocalStorage[i]);
+    }
   }
 
   public createBoard(title: string): BoardInfo {
@@ -79,7 +107,7 @@ export class DataProvider implements IDataProvider {
     };
     this._columns.push(column);
     const store = JSON.stringify(column);
-    localStorage.setItem(`columnId-${column.id}`, store);
+    localStorage.setItem(`columnId-${boardId}-${column.id}`, store);
     return column;
   }
 
@@ -97,7 +125,7 @@ export class DataProvider implements IDataProvider {
 
     this._tasks.push(task);
     const store = JSON.stringify(task);
-    localStorage.setItem(`taskId-${task.id}`, store);
+    localStorage.setItem(`taskId-${boardId}-${columnId}-${task.id}`, store);
     return task;
   }
 

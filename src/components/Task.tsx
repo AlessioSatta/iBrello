@@ -1,5 +1,5 @@
 import { IColumn, ITask } from "@alessiosatta/brello-business-logic";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { DndManager, DndManagerData } from "../utils";
 import { Button } from "react-bootstrap";
@@ -8,16 +8,16 @@ type Props = {
   column: IColumn;
   dndManager: DndManager<DndManagerData>;
   task: ITask;
+  tasksList: ITask[];
   onDelete: () => void;
-  setTaskTitleValidation: any;
 };
 
 const TaskComponent: React.FC<Props> = ({
   column,
   dndManager,
   task,
+  tasksList,
   onDelete,
-  setTaskTitleValidation,
 }) => {
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
@@ -52,13 +52,17 @@ const TaskComponent: React.FC<Props> = ({
 
   const updateTaskTitle = () => {
     setNewTaskTitle("");
-    task.updateTitle(newTaskTitle);
+    if (
+      !tasksList.find(
+        (a) => a.title.toLowerCase() == newTaskTitle.toLowerCase()
+      )
+    ) {
+      task.updateTitle(newTaskTitle);
+    } else {
+      alert("This task already exist");
+    }
     setTaskTitle(task.title);
   };
-
-  useEffect(() => {
-    setTaskTitleValidation(task.title);
-  }, []);
 
   return (
     <div
