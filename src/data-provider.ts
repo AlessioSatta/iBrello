@@ -5,6 +5,8 @@ import {
   TaskInfo,
 } from "@alessiosatta/brello-business-logic";
 
+import CryptoJS from "react-native-crypto-js";
+
 export class DataProvider implements IDataProvider {
   private _boards: BoardInfo[] = [
     // { id: "1", title: "Board 1" },
@@ -101,7 +103,10 @@ export class DataProvider implements IDataProvider {
     };
     this._boards.push(board);
     const store = JSON.stringify(board);
-    localStorage.setItem(`boardId-${board.id}`, store);
+    localStorage.setItem(
+      `boardId-${board.id}`,
+      CryptoJS.AES.encrypt(store, "password").toString()
+    );
     return board;
   }
 
@@ -113,7 +118,10 @@ export class DataProvider implements IDataProvider {
     };
     this._columns.push(column);
     const store = JSON.stringify(column);
-    localStorage.setItem(`columnId-${boardId}-${column.id}`, store);
+    localStorage.setItem(
+      `columnId-${boardId}-${column.id}`,
+      CryptoJS.AES.encrypt(store, "password").toString()
+    );
     return column;
   }
 
@@ -139,9 +147,14 @@ export class DataProvider implements IDataProvider {
     let fromLocalStorage = Object.keys(localStorage).filter((a) =>
       a.startsWith("boardId")
     );
-    fromLocalStorage.forEach(
-      (a, i) => (this._boards[i] = JSON.parse(localStorage.getItem(a) || ""))
-    );
+    let bytes: any = [];
+    fromLocalStorage.forEach((a, i) => {
+      bytes[i] = CryptoJS.AES.decrypt(
+        localStorage.getItem(a) || "",
+        "password"
+      );
+      this._boards[i] = JSON.parse(bytes[i].toString(CryptoJS.enc.Utf8));
+    });
     return this._boards;
   }
 
@@ -149,9 +162,14 @@ export class DataProvider implements IDataProvider {
     let fromLocalStorage = Object.keys(localStorage).filter((a) =>
       a.startsWith("columnId")
     );
-    fromLocalStorage.forEach(
-      (a, i) => (this._columns[i] = JSON.parse(localStorage.getItem(a) || ""))
-    );
+    let bytes: any = [];
+    fromLocalStorage.forEach((a, i) => {
+      bytes[i] = CryptoJS.AES.decrypt(
+        localStorage.getItem(a) || "",
+        "password"
+      );
+      this._columns[i] = JSON.parse(bytes[i].toString(CryptoJS.enc.Utf8));
+    });
     return this._columns.filter((a) => a.boardId == boardId);
   }
 
