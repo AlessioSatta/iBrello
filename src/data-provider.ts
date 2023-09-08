@@ -168,16 +168,25 @@ export class DataProvider implements IDataProvider {
   public upateBoardTitle(boardId: string, title: string): void {
     const board = this._boards.find((a) => a.id == boardId);
     if (board) board.title = title;
+    const store = JSON.stringify(board);
+    localStorage.setItem(`boardId-${boardId}`, store);
   }
 
   public updateColumnTitle(columnId: string, title: string): void {
     const column = this._columns.find((a) => a.id == columnId);
     if (column) column.title = title;
+    const store = JSON.stringify(column);
+    localStorage.setItem(`columnId-${column?.boardId}-${columnId}`, store);
   }
 
   public updateTaskTitle(taskId: string, title: string): void {
     const task = this._tasks.find((a) => a.id == taskId);
     if (task) task.title = title;
+    const store = JSON.stringify(task);
+    localStorage.setItem(
+      `taskId-${task?.boardId}-${task?.columnId}-${taskId}`,
+      store
+    );
   }
 
   private _generateId(): string {
