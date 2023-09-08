@@ -35,7 +35,7 @@ const BoardComponent: React.FC<Props> = ({ board, boardsList, onDelete }) => {
         (a) => a.title.toLowerCase() == newColumnTitle.toLowerCase()
       )
     ) {
-      if (newColumnTitle !== "") board.createColum(newColumnTitle);
+      if (newColumnTitle.length) board.createColum(newColumnTitle);
       else alert("Cannot create a column without a title");
     } else {
       alert("This column already exist");
@@ -77,7 +77,8 @@ const BoardComponent: React.FC<Props> = ({ board, boardsList, onDelete }) => {
         (a) => a.title.toLowerCase() == newBoardTitle.toLowerCase()
       )
     ) {
-      board.updateTitle(newBoardTitle);
+      if (newBoardTitle.length) board.updateTitle(newBoardTitle);
+      else alert("Cannot update with a blank title");
     } else {
       alert("This board already exist");
     }

@@ -42,7 +42,8 @@ const ColumnComponent: React.FC<Props> = ({
       ) &&
         taskTitle !== "")
     ) {
-      column.createTask(taskTitle);
+      if (taskTitle.length) column.createTask(taskTitle);
+      else alert("Cannot create task without title");
     } else {
       alert("This task already exist");
     }
@@ -90,7 +91,8 @@ const ColumnComponent: React.FC<Props> = ({
         (a) => a.title.toLowerCase() == newColumnTitle.toLowerCase()
       )
     ) {
-      column.updateTitle(newColumnTitle);
+      if (newColumnTitle.length) column.updateTitle(newColumnTitle);
+      else alert("Cannot update with a blank title");
     } else {
       alert("This column already exist");
     }

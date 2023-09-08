@@ -60,8 +60,8 @@ const AppComponent: React.FC<Props> = ({ app }) => {
         (a) => a.title.toLowerCase() == newBoardTitle.toLowerCase()
       )
     ) {
-      if (newBoardTitle !== "") app.createBoard(newBoardTitle);
-      else alert("Cannot creat a column without a title");
+      if (newBoardTitle.length) app.createBoard(newBoardTitle);
+      else alert("Cannot creat a board without a title");
     } else {
       alert("This board already exist");
     }
